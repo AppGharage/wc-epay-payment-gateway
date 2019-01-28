@@ -275,21 +275,17 @@ function epay_init_gateway_class()
                     return;
                 }
 
+            
+                $charge_api_body = json_decode($charge_api_response['body'], true);
+
+
+                if (!$charge_api_body['success']) {
+                    wc_add_notice($charge_api_body['message'], 'error');
+                    return;
+                }
+                
                 wc_add_notice('A Payment Request has been sent to your Mobile Wallet, Kindly approve Payment.', 'success');
                 return;
-            /*
-            $charge_api_body = json_decode($charge_api_response['body'], true);
-
-
-            if ($charge_api_body['success']) {
-                wc_add_notice('A Payment Request has been sent to your Mobile Wallet, Kindly approve Payment.', 'success');
-                return;
-            }
-            error_log('Request Response : ' . $charge_api_body);
-
-
-            wc_add_notice($charge_api_body['message'], 'error');*/
-                //return;
             } else {
                 wc_add_notice('Connection error.', 'error');
                 return;
