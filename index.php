@@ -3,7 +3,7 @@
  * Plugin Name: Epay Payment Gateway
  * Plugin URI: https://epaygh.com
  * Description: Epay payment gateway plugin for WooCommerce. It allows you to accept Mobile Money payments in your shop
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: AppGharage
  * Author URI: https://appgharage.com
 */
@@ -37,6 +37,7 @@ function epay_init_gateway_class()
             $this->has_fields = true;
             $this->method_title = 'Epay';
             $this->method_description = 'Recieve Mobile Money payments in your shop.';
+            $this->instructions= "Kindly Approve the payment Request on your mobile Handset";
  
             $this->supports = array(
                 'products'
@@ -56,6 +57,12 @@ function epay_init_gateway_class()
  
             // This action hook saves the settings
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ));
+
+            //Custom Actions
+            add_action('woocommerce_thankyou_' . $this->id, array( $this, 'thank_you_page' ));
+          
+            // Customer Emails
+            //add_action('woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3);
  
             // You can also register a webhook here
             // add_action( 'woocommerce_api_{webhook name}', array( $this, 'webhook' ) );
@@ -78,14 +85,14 @@ function epay_init_gateway_class()
                     'title'       => 'Title',
                     'type'        => 'text',
                     'description' => 'This controls the title which the user sees during checkout.',
-                    'default'     => 'Mobile Money (MTN, Vodafone, AirtelTigo)',
+                    'default'     => 'Mobile Money by Epay',
                     'desc_tip'    => true,
                 ),
                 'description' => array(
                     'title'       => 'Description',
                     'type'        => 'textarea',
                     'description' => 'This controls the description which the user sees during checkout.',
-                    'default'     => 'Pay with your mobile money via Epay payment gateway.',
+                    'default'     => 'Pay with your mobile money wallet via Epay payment gateway.',
                 ),
                 'merchant_key' => array(
                     'title'       => 'Account Merchant Key',
@@ -95,12 +102,12 @@ function epay_init_gateway_class()
                 'app_id' => array(
                     'title'       => 'Integration App ID',
                     'type'        => 'text',
-                    'description' => 'This is your Integration\'s App ID as displayed under Integrations on your Epay Dashboard',
+                    'description' => 'This is your Integration\'s App ID as displayed under Integrations on your Epay Dashboard. NB: You\'re required to create an Integration first.',
                 ),
                 'app_secret' => array(
                     'title'       => 'Integration App Secret',
                     'type'        => 'text',
-                    'description' => 'This is your Integration\'s App Secret as displayed under Integrations on your Epay Dashboard',
+                    'description' => 'This is your Integration\'s App Secret as displayed under Integrations on your Epay Dashboard. NB: You\'re required to create an Integration first.',
                 )
             );
         }
@@ -256,7 +263,7 @@ function epay_init_gateway_class()
                     "voucher"=> $_POST['epaygh_payment_voucher'],
                     "payment_description" =>  'Purchase with Order ID of '.$order->get_order_number()
                 );
-               
+
                 $charge_request_body = array(
                     'body' => json_encode($charge_api_args),
                     'headers' => array(
@@ -284,12 +291,59 @@ function epay_init_gateway_class()
                     return;
                 }
                 
-                wc_add_notice('A Payment Request has been sent to your Mobile Wallet, Kindly approve Payment.', 'success');
+                //wc_add_notice('A Payment Request has been sent to your Mobile Wallet, Kindly approve Payment.', 'success');
+                // Return thankyou redirect
+                return array(
+                    'result' 	=> 'success',
+                    'redirect'	=> $this->get_return_url($order)
+                );
                 return;
             } else {
                 wc_add_notice('Connection error.', 'error');
                 return;
             }
+        }
+
+        /**
+         * Output for the order received page.
+         */
+        public function thank_you_page()
+        {
+            if ($this->instructions) {
+                return $this->generatePaymentApprovalInstructions();
+                //echo wpautop(wptexturize($this->instructions));
+            }
+        }
+
+        private function generatePaymentApprovalInstructions()
+        {
+            echo "
+                <br>
+                <h2> A Payment Request has been sent to your Mobile Money Wallet, Kindly approve Payment.</h2>
+                <h3>Payment Approval Procedures</h3>
+                <p><strong>Using MTN Mobile Money? Follow the steps below;</strong></p>
+                <ol>
+                    <li>Dial *170#</li>
+                    <li>Select option 7 [Wallet]</li>
+                    <li>Select 3 [My Approvals]</li>
+                    <li>Enter your MOMO pin</li>
+                    <li>Select 1, which is the Pending transaction</li>
+                    <li>Choose option 1 [Approve] </li>
+                    <li>Confirm the transaction</li>
+                </ol>
+                <br>
+                <p><strong>Using Tigo Cash? Follow the steps below;</strong></p>
+                <ol>
+                    <li>Dial *170#</li>
+                    <li>Select option 7 [Wallet]</li>
+                    <li>Select 3 [My Approvals]</li>
+                    <li>Enter your MOMO pin</li>
+                    <li>Select 1, which is the Pending transaction</li>
+                    <li>Choose option 1 [Approve] </li>
+                    <li>Confirm the transaction</li>
+                </ol>
+                <br>
+            ";
         }
  
         /*
