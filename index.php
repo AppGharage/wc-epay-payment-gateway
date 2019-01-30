@@ -313,8 +313,7 @@ function epay_init_gateway_class()
         {
             echo "
                 <br>
-                <h2> A Payment Request has been sent to your Mobile Money Wallet, Kindly approve Payment.</h2>
-                <h3>Payment Approval Procedures</h3>
+                <h3>A Payment Request has been sent to your Mobile Money Wallet, Kindly follow the payment approval procedures below to approve your payment;</h3>
                 <p><strong>Using MTN Mobile Money? Follow the steps below;</strong></p>
                 <ol>
                     <li>Dial *170#</li>
