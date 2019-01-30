@@ -3,7 +3,7 @@
  * Plugin Name: Epay Payment Gateway
  * Plugin URI: https://epaygh.com
  * Description: Epay payment gateway plugin for WooCommerce. It allows you to accept Mobile Money payments in your shop
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: AppGharage
  * Author URI: https://appgharage.com
 */
@@ -60,12 +60,7 @@ function epay_init_gateway_class()
 
             //Custom Actions
             add_action('woocommerce_thankyou_' . $this->id, array( $this, 'thank_you_page' ));
-          
-            // Customer Emails
-            //add_action('woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3);
- 
-            // You can also register a webhook here
-            // add_action( 'woocommerce_api_{webhook name}', array( $this, 'webhook' ) );
+         
         }
  
         /**
@@ -85,14 +80,14 @@ function epay_init_gateway_class()
                     'title'       => 'Title',
                     'type'        => 'text',
                     'description' => 'This controls the title which the user sees during checkout.',
-                    'default'     => 'Mobile Money by Epay',
+                    'default'     => 'Mobile Money powered by Epay',
                     'desc_tip'    => true,
                 ),
                 'description' => array(
                     'title'       => 'Description',
                     'type'        => 'textarea',
                     'description' => 'This controls the description which the user sees during checkout.',
-                    'default'     => 'Pay with your mobile money wallet via Epay payment gateway.',
+                    'default'     => 'Pay with any Ghanaian Mobile Money Wallet powered by epaygh.com.',
                 ),
                 'merchant_key' => array(
                     'title'       => 'Account Merchant Key',
@@ -102,12 +97,12 @@ function epay_init_gateway_class()
                 'app_id' => array(
                     'title'       => 'Integration App ID',
                     'type'        => 'text',
-                    'description' => 'This is your Integration\'s App ID as displayed under Integrations on your Epay Dashboard. NB: You\'re required to create an Integration first.',
+                    'description' => '<b>NB: You\'re required to create an Integration first</b>. This is your Integration\'s App ID as displayed under Integrations on your Epay Dashboard.',
                 ),
                 'app_secret' => array(
                     'title'       => 'Integration App Secret',
                     'type'        => 'text',
-                    'description' => 'This is your Integration\'s App Secret as displayed under Integrations on your Epay Dashboard. NB: You\'re required to create an Integration first.',
+                    'description' => '<b>NB: You\'re required to create an Integration first</b>. This is your Integration\'s App Secret as displayed under Integrations on your Epay Dashboard. ',
                 )
             );
         }
@@ -311,7 +306,6 @@ function epay_init_gateway_class()
         {
             if ($this->instructions) {
                 return $this->generatePaymentApprovalInstructions();
-                //echo wpautop(wptexturize($this->instructions));
             }
         }
 
@@ -346,21 +340,5 @@ function epay_init_gateway_class()
             ";
         }
  
-        /*
-         * In case you need a webhook
-         */
-        public function webhook()
-        {
- 
-             // we received the payment
-                //$order->payment_complete();
-                //$order->reduce_order_stock();
-        
-                // some notes to customer (replace true with false to make it private)
-                //$order->add_order_note('Hey, your order is paid! Thank you!', true);
-        
-                // Empty cart
-                //$woocommerce->cart->empty_cart();
-        }
     }
 }
