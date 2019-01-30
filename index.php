@@ -3,7 +3,7 @@
  * Plugin Name: Epay Payment Gateway
  * Plugin URI: https://epaygh.com
  * Description: Epay payment gateway plugin for WooCommerce. It allows you to accept Mobile Money payments in your shop
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: AppGharage
  * Author URI: https://appgharage.com
 */
@@ -305,11 +305,11 @@ function epay_init_gateway_class()
         public function thank_you_page()
         {
             if ($this->instructions) {
-                return $this->generatePaymentApprovalInstructions();
+                return $this->displayPaymentApprovalInstructions();
             }
         }
 
-        private function generatePaymentApprovalInstructions()
+        private function displayPaymentApprovalInstructions()
         {
             echo "
                 <br>
