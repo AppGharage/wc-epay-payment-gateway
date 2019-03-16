@@ -256,7 +256,8 @@ function epay_init_gateway_class()
                     "mobile_wallet_number" => $_POST['epaygh_mobile_wallet_number'],
                     "mobile_wallet_network" => $_POST['epaygh_mobile_wallet_network'],
                     "voucher"=> $_POST['epaygh_payment_voucher'],
-                    "payment_description" =>  'Purchase with Order ID of '.$order->get_order_number()
+                    "payment_description" =>  'Purchase with Order ID of '.$order->get_order_number(),
+		    "currency" => $order->get_currency()
                 );
 
                 $charge_request_body = array(
