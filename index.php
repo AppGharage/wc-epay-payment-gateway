@@ -318,7 +318,7 @@ function epay_init_gateway_class()
                 <p><strong>Using MTN Mobile Money? Follow the steps below;</strong></p>
                 <ol>
                     <li>Dial *170#</li>
-                    <li>Select option 7 [Wallet]</li>
+                    <li>Select option 6 [Wallet]</li>
                     <li>Select 3 [My Approvals]</li>
                     <li>Enter your MOMO pin</li>
                     <li>Select 1, which is the Pending transaction</li>
